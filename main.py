@@ -5,7 +5,7 @@ import random
 app = ctk.CTk()
 app.title("Wordle")
 app.geometry("420x552")
-app.minsize(420, 552)
+app.minsize(420, 592)
 
 FONT_13 = ctk.CTkFont(family="Helvetica Neue", size=13)
 FONT_15 = ctk.CTkFont(family="Helvetica Neue", size=15)
@@ -202,6 +202,8 @@ app.configure(fg_color=COLOR_APP_BG)
 tiles = []
 keyboard_window = None
 keyboard_frames = []
+info_window = None
+info_frames = []
 keyboard_state = {}
 keyboard_buttons = {}
 previous_guesses = set()
@@ -774,7 +776,7 @@ def on_theme_change(theme):
     Parameters:
     - theme: The newly selected theme as a string.
     """
-    global current_theme
+    global current_theme, info_window
     global COLOR_APP_BG, COLOR_BOARD_BG, COLOR_BOARD_TILE, COLOR_TEXT, COLOR_BUTTON, COLOR_BUTTON_HOVER, COLOR_DROPDOWN
     global COLOR_WRONG, COLOR_MISPLACED, COLOR_CORRECT, COLOR_KEY, COLOR_HOVER_KEY
     global COLOR_GREEN, COLOR_GREEN_HOVER, COLOR_RED, COLOR_RED_HOVER
@@ -802,6 +804,7 @@ def on_theme_change(theme):
 
     app.configure(fg_color=themes[current_theme]["APP_BG"])
     frame.configure(fg_color=themes[current_theme]["BOARD_BG"])
+    top.configure(fg_color=themes[current_theme]["APP_BG"])
     bottom.configure(fg_color=themes[current_theme]["APP_BG"])
     lang_label.configure(text_color=COLOR_TEXT)
     theme_label.configure(text_color=COLOR_TEXT)
@@ -809,6 +812,7 @@ def on_theme_change(theme):
                        text_color=COLOR_TEXT)
     theme_box.configure(fg_color=COLOR_DROPDOWN, border_color=COLOR_BUTTON, button_color=COLOR_BUTTON,
                         text_color=COLOR_TEXT)
+    info_btn.configure(fg_color=COLOR_BUTTON, hover_color=COLOR_BUTTON_HOVER, text_color=COLOR_TEXT)
     keyboard_btn.configure(fg_color=COLOR_BUTTON, hover_color=COLOR_BUTTON_HOVER, text_color=COLOR_TEXT)
 
     for r in range(ROWS):
@@ -818,15 +822,19 @@ def on_theme_change(theme):
 
     refresh_keyboard_colors()
 
-    # ENTER
-    btn = keyboard_buttons.get("⏎")
-    if btn and btn.winfo_exists():
-        btn.configure(fg_color=COLOR_GREEN, hover_color=COLOR_GREEN_HOVER)
+    # # ENTER
+    # btn = keyboard_buttons.get("⏎")
+    # if btn and btn.winfo_exists():
+    #     btn.configure(fg_color=COLOR_GREEN, hover_color=COLOR_GREEN_HOVER)
+    #
+    # # DELETE
+    # btn = keyboard_buttons.get("⌫")
+    # if btn and btn.winfo_exists():
+    #     btn.configure(fg_color=COLOR_RED, hover_color=COLOR_RED_HOVER)
 
-    # DELETE
-    btn = keyboard_buttons.get("⌫")
-    if btn and btn.winfo_exists():
-        btn.configure(fg_color=COLOR_RED, hover_color=COLOR_RED_HOVER)
+    if info_window is not None and info_window.winfo_exists():
+        info_window.destroy()
+        info_window = None
 
 
 def on_close():
@@ -839,9 +847,56 @@ def on_close():
         app.destroy()
 
 
+def open_info():
+    """
+    Opens the information popup window.
+    """
+    global info_framesm, info_window
+    info_frames.clear()
+
+    info_window = ctk.CTkToplevel()
+    info_window.title("About Wordle")
+    info_window.geometry("360x277")
+    info_window.resizable(False, False)
+    info_window.configure(fg_color=COLOR_APP_BG)
+
+    ctk.CTkLabel(info_window, text="Wordle is a word game where you have 6 attempts to guess a valid 5-letter word.",
+                 font=FONT_15, text_color=COLOR_TEXT, justify="left", wraplength=300, bg_color=COLOR_APP_BG).pack(
+        padx=(30, 0), pady=(30, 0), anchor="w")
+
+    ctk.CTkLabel(info_window, text="After each guess, the color of the tiles changes to show how close your guess was:",
+                 font=FONT_15, text_color=COLOR_TEXT, justify="left", wraplength=300).pack(pady=(5, 10), padx=30,
+                                                                                           anchor="w")
+
+    # Color explanations
+    for letter, state, color, state_desc in [
+        ("A", "correct", COLOR_CORRECT, "A is in the word and in the correct spot"),
+        ("B", "misplaced", COLOR_MISPLACED, "B is in the word but in the wrong spot"),
+        ("C", "wrong", COLOR_WRONG, "C is not in the word in any spot"),
+    ]:
+        frame = ctk.CTkFrame(info_window, fg_color=COLOR_APP_BG, width=300, height=40)
+        frame.pack(pady=(0, 5), padx=30)
+        info_frames.append(frame)
+
+        ctk.CTkLabel(frame, text=letter, font=FONT_20_BOLD,
+                     text_color=get_text_color(state), fg_color=color,
+                     width=40, height=40, corner_radius=5).place(x=0, y=0)
+
+        ctk.CTkLabel(frame, text="= " + state_desc,
+                     font=FONT_13, text_color=COLOR_TEXT,
+                     wraplength=255, justify="left").place(x=45, rely=0.5, anchor="w")
+
+
+top = ctk.CTkFrame(app, width=360, height=30, fg_color=COLOR_APP_BG)
+top.pack(pady=(30, 0), padx=30)
+
+info_btn = ctk.CTkButton(top, text="?", width=60, height=30, fg_color=COLOR_BUTTON, hover_color=COLOR_BUTTON_HOVER,
+                         font=FONT_20_BOLD, text_color=COLOR_TEXT, corner_radius=5, command=open_info)
+info_btn.place(x=290, y=0)
+
 # Word grid
 frame = ctk.CTkFrame(app, fg_color=COLOR_BOARD_BG)
-frame.pack(padx=30, pady=(30, 5))
+frame.pack(padx=30, pady=(10, 5))
 create_grid(frame)
 
 bottom = ctk.CTkFrame(app, width=360, fg_color=COLOR_APP_BG)
@@ -881,7 +936,7 @@ theme_box.configure(command=lambda t: on_theme_change(t))
 
 # On-screen keyboard button
 keyboard_btn = ctk.CTkButton(bottom, text="⌨️", width=60, height=30, command=open_keyboard, fg_color=COLOR_BUTTON,
-                             hover_color=COLOR_BUTTON_HOVER, font=FONT_20_BOLD)
+                             hover_color=COLOR_BUTTON_HOVER, font=FONT_20_BOLD, corner_radius=5)
 keyboard_btn.grid(row=1, column=2, padx=(10, 0))
 
 app.protocol("WM_DELETE_WINDOW", on_close)
