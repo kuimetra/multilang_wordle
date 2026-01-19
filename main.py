@@ -31,7 +31,7 @@ BASE_THEMES = {
         "MISPLACED": "#B2A04C",
         "CORRECT": "#618C55",
 
-        # Keyboard colors
+        # Keyboard colours
         "KEY": "#818283",
         "HOVER_KEY": "#5A5B5E",
 
@@ -864,7 +864,8 @@ def open_info():
                  font=FONT_15, text_color=COLOR_TEXT, justify="left", wraplength=300, bg_color=COLOR_APP_BG).pack(
         padx=(30, 0), pady=(30, 0), anchor="w")
 
-    ctk.CTkLabel(info_window, text="After each guess, the color of the tiles changes to show how close your guess was:",
+    ctk.CTkLabel(info_window,
+                 text="After each guess, the colour of the tiles changes to show how close your guess was:",
                  font=FONT_15, text_color=COLOR_TEXT, justify="left", wraplength=300).pack(pady=(5, 10), padx=30,
                                                                                            anchor="w")
 
@@ -908,7 +909,7 @@ lang_label.grid(row=0, column=0, sticky="w", padx=5)
 
 # Language dropdown
 lang_box = ctk.CTkComboBox(bottom, fg_color=COLOR_DROPDOWN, border_color=COLOR_BUTTON, button_color=COLOR_BUTTON,
-                           values=["English", "Norwegian", "Ukrainian"], width=130, font=FONT_15,
+                           text_color=COLOR_TEXT, values=["English", "Norwegian", "Ukrainian"], width=130, font=FONT_15,
                            corner_radius=5)
 lang_box.set("English")
 lang_box.configure(state="readonly")
@@ -926,9 +927,10 @@ theme_label.grid(row=0, column=1, sticky="w", padx=5)
 
 # Theme Dropdown
 theme_box = ctk.CTkComboBox(bottom, fg_color=COLOR_DROPDOWN, border_color=COLOR_BUTTON, button_color=COLOR_BUTTON,
+                            text_color=COLOR_TEXT,
                             values=["Classic Dark", "Classic Light", "High Contrast Dark", "High Contrast Light",
-                                    "Midnight Blue & Rose", "Blush & Teal"],
-                            width=130, height=30, font=FONT_15, corner_radius=5)
+                                    "Midnight Blue & Rose", "Blush & Teal"], width=130, height=30, font=FONT_15,
+                            corner_radius=5)
 theme_box.set("Classic Dark")
 theme_box.configure(state="readonly")
 theme_box.grid(row=1, column=1)
