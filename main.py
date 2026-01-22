@@ -7,6 +7,9 @@ app.title("Wordle")
 app.geometry("420x552")
 app.minsize(420, 592)
 
+ROWS = 6
+COLS = 5
+
 FONT_13 = ctk.CTkFont(family="Helvetica Neue", size=13)
 FONT_15 = ctk.CTkFont(family="Helvetica Neue", size=15)
 FONT_16_BOLD = ctk.CTkFont(family="Helvetica Neue", size=16, weight="bold")
@@ -14,8 +17,133 @@ FONT_18_BOLD = ctk.CTkFont(family="Helvetica Neue", size=18, weight="bold")
 FONT_20_BOLD = ctk.CTkFont(family="Helvetica Neue", size=20, weight="bold")
 FONT_30_BOLD = ctk.CTkFont(family="Helvetica Neue", size=30, weight="bold")
 
-ROWS = 6
-COLS = 5
+current_language = "English"
+UI_STRINGS = {
+    "English": {
+        "language_title": "Language:",
+        "theme_title": "Theme:",
+        "themes": {
+            "Classic Dark": "Classic Dark",
+            "Classic Light": "Classic Light",
+            "High Contrast Dark": "High Contrast Dark",
+            "High Contrast Light": "High Contrast Light",
+            "Midnight Blue & Rose": "Midnight Blue & Rose",
+            "Blush & Teal": "Blush & Teal",
+        },
+        "about_title": "About Wordle",
+        "about_intro": "Wordle is a word game where you have 6 attempts to guess a valid 5-letter word.",
+        "about_rules": "After each guess, the colour of the tiles changes to show how close your guess was:",
+        "example_letters": ["A", "B", "C"],
+        "correct_description": "A is in the word and in the correct spot",
+        "misplaced_description": "B is in the word but in the wrong spot",
+        "wrong_description": "C is not in the word in any spot",
+        "not_enough_letters_title": "Not Enough Letters",
+        "not_enough_letters_msg": "Please complete the word before submitting.",
+        "invalid_letters_title": "Invalid Letters",
+        "invalid_letters_msg": "The word contains letters not in the English alphabet.",
+        "invalid_word_title": "Invalid Word",
+        "invalid_word_msg": "The word is not in the word list.",
+        "already_guessed_title": "Already Guessed",
+        "already_guessed_msg": ["You have already submitted", ".\nPlease try a different word."],
+        "congratulations_title": "Congratulations!",
+        "first_try_congratulations": "Splendid! You got it on the first try!",
+        "medium_try_congratulations": "Amazing! You solved it quickly!",
+        "normal_congratulations": "Great job! You guessed the word!",
+        "change_language_title": "Change Language?",
+        "word": ["word", "words"],
+        "change_language_msg": ["You have already submitted", ". Changing the language will reset the game. Continue?"],
+        "yes": "Yes",
+        "no": "No",
+        "keyboard_title": "Keyboard",
+        "game_over_title": "Game Over",
+        "game_over_msg": ["The word was", ".\nGreat effort! Try again tomorrow!"],
+        "quit_title": "Quit Game?",
+        "quit_msg": "Are you sure you want to quit?",
+    },
+    "Norsk": {
+        "language_title": "Språk:",
+        "theme_title": "Modus:",
+        "themes": {
+            "Classic Dark": "Klassisk Mørk",
+            "Classic Light": "Klassisk Lys",
+            "High Contrast Dark": "Høy Kontrast Mørk",
+            "High Contrast Light": "Høy Kontrast Lys",
+            "Midnight Blue & Rose": "Midnattsblå & Rosa",
+            "Blush & Teal": "Rosa & Sjøgrønn",
+        },
+        "about_title": "Om Wordle",
+        "about_intro": "Wordle er et ordspill hvor du har 6 forsøk på å gjette et gyldig 5-bokstavers dagens ord.",
+        "about_rules": "Etter hvert forsøk endres fargen på flisene for å vise hvor nærme du var:",
+        "example_letters": ["A", "B", "C"],
+        "correct_description": "A er i ordet og på riktig plass",
+        "misplaced_description": "B er i ordet, men på feil plass",
+        "wrong_description": "C er ikke i ordet",
+        "not_enough_letters_title": "Ikke nok bokstaver",
+        "not_enough_letters_msg": "Vennligst utfyll ordet før du sender inn.",
+        "invalid_letters_title": "Ugyldige bokstaver",
+        "invalid_letters_msg": "Ordet inneholder bokstaver som ikke er i det norske alfabetet.",
+        "invalid_word_title": "Ugyldig ord",
+        "invalid_word_msg": "Ordet er ikke i ordlista.",
+        "already_guessed_title": "Allerede gjettet",
+        "already_guessed_msg": ["Du har allerede sendt inn", ".\nVennligst prøv et annet ord."],
+        "congratulations_title": "Gratulerer!",
+        "first_try_congratulations": "Strålende! Du klarte det på første forsøk!",
+        "medium_try_congratulations": "Fantastisk! Du løste det raskt!",
+        "normal_congratulations": "Flott jobb! Du gjettet ordet!",
+        "change_language_title": "Bytte språk?",
+        "word": ["ord", "ord"],
+        "change_language_msg": ["Du har allerede sendt inn",
+                                ". Å bytte språk vil tilbakestille spillet. Vil du fortsette?"],
+        "yes": "Ja",
+        "no": "Nei",
+        "keyboard_title": "Tastatur",
+        "game_over_title": "Spillet er over",
+        "game_over_msg": ["Ordet var", ".\nGod innsats! Prøv igjen i morgen!"],
+        "quit_title": "Avslutte spillet?",
+        "quit_msg": "Er du sikker på at du vil avslutte?",
+    },
+    "Українська": {
+        "language_title": "Мова:",
+        "theme_title": "Тема:",
+        "themes": {
+            "Classic Dark": "Класична Темна",
+            "Classic Light": "Класична Світла",
+            "High Contrast Dark": "Темна Високої Контрастності",
+            "High Contrast Light": "Світла Високої Контрастності",
+            "Midnight Blue & Rose": "Синя Ніч & Рожевий",
+            "Blush & Teal": "Рожевий & Бірюзовий",
+        },
+        "about_title": "Про Wordle",
+        "about_intro": "Wordle - це гра, у якій потрібно вгадати слово з 5 літер за 6 спроб.",
+        "about_rules": "Після кожної спроби колір плиток показує, наскільки близька відповідь:",
+        "example_letters": ["А", "Б", "В"],
+        "correct_description": "A є в слові і на правильному місці",
+        "misplaced_description": "Б є в слові, але не на цій позиції",
+        "wrong_description": "В немає в слові",
+        "not_enough_letters_title": "Недостатньо літер",
+        "not_enough_letters_msg": "Будь ласка, завершіть слово перед відправкою.",
+        "invalid_letters_title": "Недійсні літери",
+        "invalid_letters_msg": "Слово містить літери, яких немає в українському алфавіті.",
+        "invalid_word_title": "Недійсне слово",
+        "invalid_word_msg": "Дане слово відсутнє у словнику.",
+        "already_guessed_title": "Вже вгадано",
+        "already_guessed_msg": ["Ви вже відправили", ".\nБудь ласка, спробуйте інше слово."],
+        "congratulations_title": "Вітаємо!",
+        "first_try_congratulations": "Чудово! Ви вгадали з першої спроби!",
+        "medium_try_congratulations": "Неймовірно! Ви швидко розгадали слово!",
+        "normal_congratulations": "Відмінна робота! Ви вгадали слово!",
+        "change_language_title": "Змінити мову?",
+        "word": ["слово", "слова"],
+        "change_language_msg": ["Ви вже відправили", ". Зміна мови скине гру. Продовжити?"],
+        "yes": "Так",
+        "no": "Ні",
+        "keyboard_title": "Клавіатура",
+        "game_over_title": "Гра завершена",
+        "game_over_msg": ["Слово дня -", ".\nХороша спроба! Спробуйте знову завтра!"],
+        "quit_title": "Вийти з гри?",
+        "quit_msg": "Ви впевнені, що хочете вийти з гри?",
+    }
+}
 
 BASE_THEMES = {
     "Classic Dark": {
@@ -129,6 +257,33 @@ THEME_VARIANTS = {
 }
 
 
+def t(key):
+    """
+    Translates a UI string based on the current language.
+
+    Parameters:
+    - key: The key for the UI string.
+
+    Returns:
+    - The translated string.
+    """
+    return UI_STRINGS[current_language][key]
+
+
+def refresh_ui_language():
+    """
+    Refreshes the UI elements to reflect the current language.
+    """
+    lang_label.configure(text=t("language_title"))
+    theme_label.configure(text=t("theme_title"))
+
+    labels = list(UI_STRINGS[current_language]["themes"].values())
+    theme_box.configure(values=labels)
+
+    # keep current theme selected (translated label)
+    theme_box.set(UI_STRINGS[current_language]["themes"][current_theme])
+
+
 def build_themes(base_themes, variants):
     """
     Builds the complete themes dictionary by applying variants to base themes.
@@ -156,6 +311,7 @@ themes = build_themes(BASE_THEMES, THEME_VARIANTS)
 current_theme = "Classic Dark"
 
 COLOR_APP_BG = themes[current_theme]["APP_BG"]
+app.configure(fg_color=COLOR_APP_BG)
 COLOR_BOARD_BG = themes[current_theme]["BOARD_BG"]
 COLOR_BOARD_TILE = themes[current_theme]["BOARD_TILE"]
 COLOR_TEXT = themes[current_theme]["TEXT"]
@@ -181,13 +337,13 @@ game_over = False
 dict_folder = "dictionaries"
 lang_files = {
     "English": f"{dict_folder}/english.csv",
-    "Norwegian": f"{dict_folder}/norwegian.csv",
-    "Ukrainian": f"{dict_folder}/ukrainian.csv"
+    "Norsk": f"{dict_folder}/norwegian.csv",
+    "Українська": f"{dict_folder}/ukrainian.csv"
 }
 language_alphabets = {
     "English": set("ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
-    "Norwegian": set("ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ"),
-    "Ukrainian": set("АБВГҐДЕЄЖЗИІЇЙКЛМНОПРСТУФХЦЧШЩЬЮЯ")
+    "Norsk": set("ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ"),
+    "Українська": set("АБВГҐДЕЄЖЗИІЇЙКЛМНОПРСТУФХЦЧШЩЬЮЯ")
 }
 
 priority = {
@@ -196,8 +352,6 @@ priority = {
     "correct": 3,
 }
 tile_states = [[None for _ in range(COLS)] for _ in range(ROWS)]
-
-app.configure(fg_color=COLOR_APP_BG)
 
 tiles = []
 keyboard_window = None
@@ -208,6 +362,7 @@ keyboard_state = {}
 keyboard_buttons = {}
 previous_guesses = set()
 
+# TODO: Translate button labels to current language, add to UI_STRINGS
 MESSAGE_BUTTON_SPECS = {
     "info": "OK",
     "warning": "Retry",
@@ -251,11 +406,11 @@ def show_message(title, message, message_type="info"):
         yes_fg, yes_hover = get_message_button_colors("confirm_yes")
         no_fg, no_hover = get_message_button_colors("confirm_no")
 
-        ctk.CTkButton(frame, text="Yes", width=75, height=30, text_color="#FFFFFF", fg_color=yes_fg,
+        ctk.CTkButton(frame, text=t("yes"), width=75, height=30, text_color="#FFFFFF", fg_color=yes_fg,
                       hover_color=yes_hover, border_color=yes_hover, border_width=2,
                       font=FONT_13, command=lambda: set_result(True)).pack(side="left", padx=(0, 20))
 
-        ctk.CTkButton(frame, text="No", width=75, height=30, text_color="#FFFFFF", fg_color=no_fg,
+        ctk.CTkButton(frame, text=t("no"), width=75, height=30, text_color="#FFFFFF", fg_color=no_fg,
                       hover_color=no_hover, border_color=no_hover, border_width=2, font=FONT_13,
                       command=lambda: set_result(False)).pack(side="right")
 
@@ -372,14 +527,14 @@ def open_keyboard():
 
     layouts = {
         "English": (["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"], 420),
-        "Norwegian": (["QWERTYUIOPÅ", "ASDFGHJKLØÆ", "ZXCVBNM"], 458),
-        "Ukrainian": (["ЙЦУКЕНГШЩЗХЇ", "ФІВАПРОЛДЖЄ", "ЯЧСМИТЬБЮ"], 496),
+        "Norsk": (["QWERTYUIOPÅ", "ASDFGHJKLØÆ", "ZXCVBNM"], 458),
+        "Українська": (["ЙЦУКЕНГШЩЗХЇ", "ФІВАПРОЛДЖЄ", "ЯЧСМИТЬБЮ"], 496),
     }
 
     rows, window_width = layouts.get(lang, layouts["English"])
 
     keyboard_window = ctk.CTkToplevel()
-    keyboard_window.title("Keyboard")
+    keyboard_window.title(t("keyboard_title"))
     keyboard_window.geometry(f"{window_width}x140")
     keyboard_window.resizable(False, False)
     keyboard_window.configure(fg_color=COLOR_APP_BG)
@@ -486,7 +641,7 @@ def submit_word():
         return
 
     if current_col < COLS:
-        show_message("Not Enough Letters", "Please complete the word before submitting.", message_type="warning")
+        show_message(t("not_enough_letters_title"), t("not_enough_letters_msg"), message_type="warning")
         return
 
     guess = "".join(tile.cget("text") for tile in tiles[current_row])
@@ -497,19 +652,18 @@ def submit_word():
     word_letters = set(guess)
 
     if not word_letters.issubset(allowed):
-        show_message("Invalid Letters", f"The word contains letters not in the {current_language} alphabet.",
-                     message_type="warning")
+        show_message(t("invalid_letters_title"), t("invalid_letters_msg"), message_type="warning")
         return
 
     # Check if word exists in dictionary
     if guess not in valid_words:
-        show_message("Invalid Word", f'{guess} is not in the word list.', message_type="warning")
+        show_message(t("invalid_word_title"), t("invalid_word_msg"), message_type="warning")
         return
 
     # Check if word was already guessed
     if guess in previous_guesses:
-        show_message("Already Guessed", f'You have already submitted the word {guess}.\n'
-                                        f'Please try a different word.', message_type="warning")
+        show_message(t("already_guessed_title"),
+                     t("already_guessed_msg")[0] + " " + guess + t("already_guessed_msg")[1], message_type="warning")
         return
 
     previous_guesses.add(guess)
@@ -520,13 +674,13 @@ def submit_word():
         num_guesses = len(previous_guesses)
         # Depending on number of guesses, show different messages
         if num_guesses == 1:
-            msg = "Splendid! You got it on the first try!"
+            msg = t("first_try_congratulations")
         elif num_guesses <= 3:
-            msg = "Amazing! You solved it quickly!"
+            msg = t("medium_try_congratulations")
         elif num_guesses <= 6:
-            msg = "Great job! You guessed the word!"
+            msg = t("normal_congratulations")
 
-        show_message("Congratulations!", msg, message_type="success")
+        show_message(t("congratulations_title"), msg, message_type="success")
         disable_game()
         return
 
@@ -535,7 +689,8 @@ def submit_word():
 
     # If player used all rows
     if current_row >= ROWS:
-        show_message("Game Over", f'The word was {secret_word}.\nGreat effort! Try again tomorrow!',
+        show_message(t("game_over_title"),
+                     t("game_over_msg")[0] + " " + secret_word + t("game_over_msg")[1],
                      message_type="info")
         disable_game()
 
@@ -737,11 +892,10 @@ def on_language_change(choice):
     global current_language, valid_words, secret_word, current_row, current_col, game_over, keyboard_window
 
     if len(previous_guesses) >= 1 and game_over is False:
-        word_text = "word" if len(previous_guesses) == 1 else "words"
-        confirm = show_message("Change Language?",
-                               f"You have already submitted {len(previous_guesses)} {word_text}. "
-                               f"Changing the language will reset the game. Continue?",
-                               message_type="confirm")
+        word_text = t("word")[0] if len(previous_guesses) == 1 else t("word")[1]
+        confirm = show_message(t("change_language_title"),
+                               t("change_language_msg")[0] + " " + str(len(previous_guesses)) + " " + word_text +
+                               t("change_language_msg")[1], message_type="confirm")
         if not confirm:
             lang_box.set(current_language)  # revert dropdown
             return
@@ -754,6 +908,7 @@ def on_language_change(choice):
     print("Today's word:", secret_word)
 
     reset_grid()
+    refresh_ui_language()
 
     # Re-enable keyboard buttons if they were disabled
     for btn in keyboard_buttons.values():
@@ -781,7 +936,8 @@ def on_theme_change(theme):
     global COLOR_WRONG, COLOR_MISPLACED, COLOR_CORRECT, COLOR_KEY, COLOR_HOVER_KEY
     global COLOR_GREEN, COLOR_GREEN_HOVER, COLOR_RED, COLOR_RED_HOVER
 
-    current_theme = theme
+    label_map = UI_STRINGS[current_language]["themes"]
+    current_theme = next((theme_id for theme_id, label in label_map.items() if label == theme), None)
 
     COLOR_APP_BG = themes[current_theme]["APP_BG"]
     COLOR_BOARD_BG = themes[current_theme]["BOARD_BG"]
@@ -822,15 +978,9 @@ def on_theme_change(theme):
 
     refresh_keyboard_colors()
 
-    # # ENTER
-    # btn = keyboard_buttons.get("⏎")
-    # if btn and btn.winfo_exists():
-    #     btn.configure(fg_color=COLOR_GREEN, hover_color=COLOR_GREEN_HOVER)
-    #
-    # # DELETE
-    # btn = keyboard_buttons.get("⌫")
-    # if btn and btn.winfo_exists():
-    #     btn.configure(fg_color=COLOR_RED, hover_color=COLOR_RED_HOVER)
+    # Update keyboard window title if open
+    if keyboard_window is not None and keyboard_window.winfo_exists():
+        keyboard_window.title(t("keyboard_title"))
 
     if info_window is not None and info_window.winfo_exists():
         info_window.destroy()
@@ -842,7 +992,7 @@ def on_close():
     Handles the event when the main window is closed.
     Prompts the user for confirmation before quitting.
     """
-    confirm = show_message("Quit Game?", "Are you sure you want to quit?", message_type="confirm")
+    confirm = show_message(t("quit_title"), t("quit_msg"), message_type="confirm")
     if confirm:
         app.destroy()
 
@@ -855,25 +1005,22 @@ def open_info():
     info_frames.clear()
 
     info_window = ctk.CTkToplevel()
-    info_window.title("About Wordle")
+    info_window.title(t("about_title"))
     info_window.geometry("360x277")
     info_window.resizable(False, False)
     info_window.configure(fg_color=COLOR_APP_BG)
 
-    ctk.CTkLabel(info_window, text="Wordle is a word game where you have 6 attempts to guess a valid 5-letter word.",
-                 font=FONT_15, text_color=COLOR_TEXT, justify="left", wraplength=300, bg_color=COLOR_APP_BG).pack(
-        padx=(30, 0), pady=(30, 0), anchor="w")
+    ctk.CTkLabel(info_window, text=t("about_intro"), font=FONT_15, text_color=COLOR_TEXT, justify="left",
+                 wraplength=300, bg_color=COLOR_APP_BG).pack(padx=(30, 0), pady=(30, 0), anchor="w")
 
-    ctk.CTkLabel(info_window,
-                 text="After each guess, the colour of the tiles changes to show how close your guess was:",
-                 font=FONT_15, text_color=COLOR_TEXT, justify="left", wraplength=300).pack(pady=(5, 10), padx=30,
-                                                                                           anchor="w")
+    ctk.CTkLabel(info_window, text=t("about_rules"), font=FONT_15, text_color=COLOR_TEXT, justify="left",
+                 wraplength=300).pack(pady=(5, 10), padx=30, anchor="w")
 
     # Color explanations
     for letter, state, color, state_desc in [
-        ("A", "correct", COLOR_CORRECT, "A is in the word and in the correct spot"),
-        ("B", "misplaced", COLOR_MISPLACED, "B is in the word but in the wrong spot"),
-        ("C", "wrong", COLOR_WRONG, "C is not in the word in any spot"),
+        (t("example_letters")[0], "correct", COLOR_CORRECT, t("correct_description")),
+        (t("example_letters")[1], "misplaced", COLOR_MISPLACED, t("misplaced_description")),
+        (t("example_letters")[2], "wrong", COLOR_WRONG, t("wrong_description")),
     ]:
         frame = ctk.CTkFrame(info_window, fg_color=COLOR_APP_BG, width=300, height=40)
         frame.pack(pady=(0, 5), padx=30)
@@ -904,12 +1051,12 @@ bottom = ctk.CTkFrame(app, width=360, fg_color=COLOR_APP_BG)
 bottom.pack()
 
 # Language label
-lang_label = ctk.CTkLabel(bottom, text="Language:", font=FONT_15, text_color=COLOR_TEXT)
+lang_label = ctk.CTkLabel(bottom, text=t("language_title"), font=FONT_15, text_color=COLOR_TEXT)
 lang_label.grid(row=0, column=0, sticky="w", padx=5)
 
 # Language dropdown
 lang_box = ctk.CTkComboBox(bottom, fg_color=COLOR_DROPDOWN, border_color=COLOR_BUTTON, button_color=COLOR_BUTTON,
-                           text_color=COLOR_TEXT, values=["English", "Norwegian", "Ukrainian"], width=130, font=FONT_15,
+                           text_color=COLOR_TEXT, values=["English", "Norsk", "Українська"], width=130, font=FONT_15,
                            corner_radius=5)
 lang_box.set("English")
 lang_box.configure(state="readonly")
@@ -922,23 +1069,21 @@ secret_word = get_todays_word(valid_words)
 print("Today's word:", secret_word)
 
 # Theme Label
-theme_label = ctk.CTkLabel(bottom, text="Theme:", font=FONT_15, text_color=COLOR_TEXT)
+theme_label = ctk.CTkLabel(bottom, text=t("theme_title"), font=FONT_15, text_color=COLOR_TEXT)
 theme_label.grid(row=0, column=1, sticky="w", padx=5)
 
 # Theme Dropdown
 theme_box = ctk.CTkComboBox(bottom, fg_color=COLOR_DROPDOWN, border_color=COLOR_BUTTON, button_color=COLOR_BUTTON,
-                            text_color=COLOR_TEXT,
-                            values=["Classic Dark", "Classic Light", "High Contrast Dark", "High Contrast Light",
-                                    "Midnight Blue & Rose", "Blush & Teal"], width=130, height=30, font=FONT_15,
-                            corner_radius=5)
-theme_box.set("Classic Dark")
+                            text_color=COLOR_TEXT, values=list(t("themes").values()), font=FONT_15, corner_radius=5,
+                            width=130, height=30)
+theme_box.set(UI_STRINGS[current_language]["themes"][current_theme])
 theme_box.configure(state="readonly")
 theme_box.grid(row=1, column=1)
 theme_box.configure(command=lambda t: on_theme_change(t))
 
 # On-screen keyboard button
-keyboard_btn = ctk.CTkButton(bottom, text="⌨️", width=60, height=30, command=open_keyboard, fg_color=COLOR_BUTTON,
-                             hover_color=COLOR_BUTTON_HOVER, font=FONT_20_BOLD, corner_radius=5)
+keyboard_btn = ctk.CTkButton(bottom, text="⌨️", command=open_keyboard, fg_color=COLOR_BUTTON,
+                             hover_color=COLOR_BUTTON_HOVER, font=FONT_20_BOLD, corner_radius=5, width=60, height=30)
 keyboard_btn.grid(row=1, column=2, padx=(10, 0))
 
 app.protocol("WM_DELETE_WINDOW", on_close)
