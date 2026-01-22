@@ -12,10 +12,10 @@ guesses, repeated words, and game completion, ensuring a smooth, intuitive exper
 
 Below are screenshots showcasing the game's interface in English, Norwegian, and Ukrainian:
 
-![Wordle English UI](assets/app_screenshot_en.png)
+![Wordle English UI](assets/app_screenshot_en.jpeg)
 
-![Wordle Norwegian UI](assets/app_screenshot_no.png)
+![Wordle Norwegian UI](assets/app_screenshot_no.jpeg)
 
-![Wordle Ukrainian UI](assets/app_screenshot_ua.png)
+![Wordle Ukrainian UI](assets/app_screenshot_ua.jpeg)
 
 To see the game in action, check out this short [demo video](assets/demo.mp4).
