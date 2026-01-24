@@ -1,7 +1,6 @@
 import customtkinter as ctk
 import datetime
 import random
-
 app = ctk.CTk()
 app.title("Wordle")
 app.geometry("420x552")
@@ -37,6 +36,11 @@ UI_STRINGS = {
         "correct_description": "A is in the word and in the correct spot",
         "misplaced_description": "B is in the word but in the wrong spot",
         "wrong_description": "C is not in the word in any spot",
+        "message_buttons": {
+            "info": "OK",
+            "warning": "Retry",
+            "success": "Yay!"
+        },
         "not_enough_letters_title": "Not Enough Letters",
         "not_enough_letters_msg": "Please complete the word before submitting.",
         "invalid_letters_title": "Invalid Letters",
@@ -78,6 +82,11 @@ UI_STRINGS = {
         "correct_description": "A er i ordet og på riktig plass",
         "misplaced_description": "B er i ordet, men på feil plass",
         "wrong_description": "C er ikke i ordet",
+        "message_buttons": {
+            "info": "OK",
+            "warning": "Prøv igjen",
+            "success": "Hurra!"
+        },
         "not_enough_letters_title": "Ikke nok bokstaver",
         "not_enough_letters_msg": "Vennligst utfyll ordet før du sender inn.",
         "invalid_letters_title": "Ugyldige bokstaver",
@@ -120,6 +129,11 @@ UI_STRINGS = {
         "correct_description": "A є в слові і на правильному місці",
         "misplaced_description": "Б є в слові, але не на цій позиції",
         "wrong_description": "В немає в слові",
+        "message_buttons": {
+            "info": "OK",
+            "warning": "Спробувати знову",
+            "success": "Ура!"
+        },
         "not_enough_letters_title": "Недостатньо літер",
         "not_enough_letters_msg": "Будь ласка, завершіть слово перед відправкою.",
         "invalid_letters_title": "Недійсні літери",
@@ -127,7 +141,7 @@ UI_STRINGS = {
         "invalid_word_title": "Недійсне слово",
         "invalid_word_msg": "Дане слово відсутнє у словнику.",
         "already_guessed_title": "Вже вгадано",
-        "already_guessed_msg": ["Ви вже відправили", ".\nБудь ласка, спробуйте інше слово."],
+        "already_guessed_msg": ["Ви вже надіслали", ".\nБудь ласка, спробуйте інше слово."],
         "congratulations_title": "Вітаємо!",
         "first_try_congratulations": "Чудово! Ви вгадали з першої спроби!",
         "medium_try_congratulations": "Неймовірно! Ви швидко розгадали слово!",
@@ -418,7 +432,7 @@ def show_message(title, message, message_type="info"):
         win.wait_window()
         return result
     else:
-        text = MESSAGE_BUTTON_SPECS[message_type]
+        text = UI_STRINGS[current_language]["message_buttons"][message_type]
         fg, hover = get_message_button_colors(message_type)
 
         ctk.CTkButton(win, text=text, width=75, height=30, text_color="#FFFFFF", fg_color=fg, hover_color=hover,
